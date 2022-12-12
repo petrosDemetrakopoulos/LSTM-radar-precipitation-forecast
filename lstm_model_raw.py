@@ -61,25 +61,42 @@ x_val, y_val = create_shifted_frames(validation_dataset)
 
 def create_model():
     model = Sequential()
-    model.add(ConvLSTM2D(filters=128, kernel_size=(7, 7),
+
+    model.add(ConvLSTM2D(filters=64, kernel_size=(7, 7),
                     input_shape=(None,*train_dataset.shape[2:]),
-                    padding='same', activation='relu', return_sequences=True))
-    model.add(BatchNormalization())
-    model.add(ConvLSTM2D(filters=128, kernel_size=(5, 5),
                     padding='same',activation='relu', return_sequences=True))
     model.add(BatchNormalization())
-    model.add(ConvLSTM2D(filters=128, kernel_size=(3, 3),
+    model.add(ConvLSTM2D(filters=64, kernel_size=(5, 5),
                     padding='same',activation='relu', return_sequences=True))
     model.add(BatchNormalization())
-    model.add(ConvLSTM2D(filters=128, kernel_size=(1, 1),
+    model.add(ConvLSTM2D(filters=64, kernel_size=(3, 3),
                     padding='same',activation='relu', return_sequences=True))
     model.add(BatchNormalization())
+    model.add(ConvLSTM2D(filters=64, kernel_size=(1, 1),
+                    padding='same',activation='relu', return_sequences=True))
     model.add(Conv3D(filters=1, kernel_size=(3, 3, 3),
                 activation='sigmoid',
                 padding='same', data_format='channels_last'))
     return model
 
 model = create_model()
+
+model.compile(loss='binary_crossentropy', optimizer='adadelta')
+print(model.summary())
+# Define modifiable training hyperparameters.
+epochs = 25
+batch_size = 3
+
+#Fit the model to the training data.
+model.fit(
+    x_train,
+    y_train,
+    batch_size=batch_size,
+    epochs=epochs,
+    validation_data=(x_val, y_val),
+    verbose=1,
+)
+model.save('./drive/MyDrive/model_saved')
 
 model.compile(loss='binary_crossentropy', optimizer='adadelta')
 print(model.summary())
