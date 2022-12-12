@@ -26,24 +26,26 @@ except:
 
 def create_dataset_from_raw(directory_path):
     batch_names = [directory_path + name for name in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, name))]
-    dataset = np.zeros(shape=(len(batch_names),36,170,156))
+    dataset = np.zeros(shape=(len(batch_names),36,154,140))
     # for fn in file_list:
     #     print(fn)
     for batch_idx,batch in enumerate(batch_names):
         files = [x for x in os.listdir(batch) if x != '.DS_Store']
-        crn_batch = np.zeros(shape=(36, 170, 156))
+        crn_batch = np.zeros(shape=(36, 154, 140))
         for (idx,raster) in enumerate(files):
             fn = batch + '/' + raster
             img = h5py.File(fn)
             original_image = np.array(img["image1"]["image_data"]).astype(float)
             img = Image.fromarray(original_image)
-            img = img.resize(size=(156, 170))
+            img = img.resize(size=(140, 154))
             original_image = np.array(img)
-            # set background pixels to 255.0
+            # set background pixels to 0.0
             original_image[original_image == 255.0] = 255.0
             original_image[original_image == 0.0] = 255.0
-            crn_batch[idx] = original_image / 255.0
+            original_image = original_image / 255.0
+            crn_batch[idx] = original_image
         dataset[batch_idx] = crn_batch
+        print(batch_idx)
     return dataset
 
 train_dataset = create_dataset_from_raw('./data/raw/')
@@ -52,8 +54,8 @@ train_dataset = np.expand_dims(train_dataset, axis=-1)
 validation_dataset = np.expand_dims(validation_dataset, axis=-1)
 
 def create_shifted_frames(data):
-    x = data[:, 0 : 17, :, :]
-    y = data[:, 18 : 35, :, :]
+    x = data[:, 0 : 34, :, :]
+    y = data[:, 1 : 35, :, :]
     return x, y
 
 x_train, y_train = create_shifted_frames(train_dataset)
@@ -96,30 +98,13 @@ model.fit(
     validation_data=(x_val, y_val),
     verbose=1,
 )
-model.save('./drive/MyDrive/model_saved')
-
-model.compile(loss='binary_crossentropy', optimizer='adadelta')
-print(model.summary())
-# Define modifiable training hyperparameters.
-epochs = 25
-batch_size = 5
-
-#Fit the model to the training data.
-model.fit(
-    x_train,
-    y_train,
-    batch_size=batch_size,
-    epochs=epochs,
-    validation_data=(x_val, y_val),
-    verbose=1,
-)
 model.save('./model_saved')
 
 # Select a random example from the validation dataset.
-example = train_dataset[np.random.choice(range(len(train_dataset)), size=1)[0]]
+example = train_dataset[np.random.choice(range(len(validation_dataset)), size=1)[0]]
 
-# Pick the first/last ten frames from the example.
-frames = example[:18, ...]
+# Pick the first/last 18 frames from the example.
+frames = example[:17, ...]
 original_frames = example[18:, ...]
 #reconstructed_model = keras.models.load_model("model_saved")
 
@@ -141,14 +126,14 @@ predicted = []
 # Plot the original frames.
 for idx, ax in enumerate(axes[0]):
     ax.imshow(np.squeeze(original_frames[idx]), cmap=my_cmap)
-    ax.set_title(f"Original Frame {idx}")
+    ax.set_title(f"Ground Truth {idx}")
     ax.axis("off")
 
 # Plot the new frames.
 new_frames = frames[18:, ...]
 for idx, ax in enumerate(axes[1]):
     ax.imshow(np.squeeze(new_frames[idx]), cmap=my_cmap)
-    ax.set_title(f"Predicted Frame {idx}")
+    ax.set_title(f"Pred. Frame {idx}")
     ax.axis("off")
 
 # Display the figure.
@@ -179,9 +164,9 @@ def updatePredicted(frame):
 def save_animations():
     fig, ax = plt.subplots()
     animation_originals = animation.FuncAnimation(fig, updateOriginals, frames=original_frames, interval=200)
-    animation_originals.save('originals.gif', writer='imagemagick', fps=2)
+    animation_originals.save('originals.gif', writer='imagemagick', fps=5)
 
     animation_predicted = animation.FuncAnimation(fig, updatePredicted, frames=new_frames, interval=200)
-    animation_predicted.save('predicted.gif', writer='imagemagick', fps=2)
+    animation_predicted.save('predicted.gif', writer='imagemagick', fps=5)
 
 save_animations()
