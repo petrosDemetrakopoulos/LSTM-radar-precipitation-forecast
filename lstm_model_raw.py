@@ -1,34 +1,24 @@
+import glob
+import os
+
+import h5py
+import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import PIL
-import h5py
 import tensorflow as tf
-from tensorflow import keras
-from keras.models import Sequential
-from keras.layers.convolutional import Conv3D
-from keras.layers import ConvLSTM2D
-from keras.layers import BatchNormalization
-from PIL import Image
-import glob
 from IPython import display
-import matplotlib.animation as animation
+from keras.layers import BatchNormalization, ConvLSTM2D
+from keras.layers.convolutional import Conv3D
+from keras.models import Sequential
+from PIL import Image
+from tensorflow import keras
 
-try:
-    # Disable all GPUS due to issue with the BatchNormalization() layer
-    tf.config.set_visible_devices([], 'GPU')
-    visible_devices = tf.config.get_visible_devices()
-    for device in visible_devices:
-        assert device.device_type != 'GPU'
-except:
-    # Invalid device or cannot modify virtual devices once initialized.
-    pass
 
 def create_dataset_from_raw(directory_path):
     batch_names = [directory_path + name for name in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, name))]
     dataset = np.zeros(shape=(len(batch_names),36,170,156))
-    # for fn in file_list:
-    #     print(fn)
+
     for batch_idx,batch in enumerate(batch_names):
         files = [x for x in os.listdir(batch) if x != '.DS_Store']
         crn_batch = np.zeros(shape=(36, 170, 156))
@@ -64,16 +54,16 @@ def create_model():
     model.add(ConvLSTM2D(filters=128, kernel_size=(7, 7),
                     input_shape=(None,*train_dataset.shape[2:]),
                     padding='same', activation='relu', return_sequences=True))
-    model.add(BatchNormalization())
+    model.add(BatchNormalization(axis=3))
     model.add(ConvLSTM2D(filters=128, kernel_size=(5, 5),
                     padding='same',activation='relu', return_sequences=True))
-    model.add(BatchNormalization())
+    model.add(BatchNormalization(axis=3))
     model.add(ConvLSTM2D(filters=128, kernel_size=(3, 3),
                     padding='same',activation='relu', return_sequences=True))
-    model.add(BatchNormalization())
+    model.add(BatchNormalization(axis=3))
     model.add(ConvLSTM2D(filters=128, kernel_size=(1, 1),
                     padding='same',activation='relu', return_sequences=True))
-    model.add(BatchNormalization())
+    model.add(BatchNormalization(axis=3))
     model.add(Conv3D(filters=1, kernel_size=(3, 3, 3),
                 activation='sigmoid',
                 padding='same', data_format='channels_last'))
