@@ -1,28 +1,19 @@
+import glob
+import os
+
+import h5py
+import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import PIL
-import h5py
 import tensorflow as tf
-from tensorflow import keras
-from keras.models import Sequential
-from keras.layers.convolutional import Conv3D
-from keras.layers import ConvLSTM2D
-from keras.layers import BatchNormalization
-from PIL import Image
-import glob
 from IPython import display
-import matplotlib.animation as animation
+from keras.layers import BatchNormalization, ConvLSTM2D
+from keras.layers.convolutional import Conv3D
+from keras.models import Sequential
+from PIL import Image
+from tensorflow import keras
 
-try:
-    # Disable all GPUS due to issue with the BatchNormalization() layer
-    tf.config.set_visible_devices([], 'GPU')
-    visible_devices = tf.config.get_visible_devices()
-    for device in visible_devices:
-        assert device.device_type != 'GPU'
-except:
-    # Invalid device or cannot modify virtual devices once initialized.
-    pass
 
 def create_dataset_from_raw(directory_path):
     batch_names = [directory_path + name for name in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, name))]
