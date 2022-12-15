@@ -17,7 +17,6 @@ from PIL import Image
 
 def raw_to_images():
     fig, ax = plt.subplots()
-    print()
     for filename in glob.iglob('./data/raw/' + '**/*.hf5', recursive=True):
         # open raw radar data
         ax.clear()
@@ -50,4 +49,4 @@ def resize_images():
         im1.save(filename,"PNG")
 
 raw_to_images()
-resize_images()
+#resize_images()
