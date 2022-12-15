@@ -50,8 +50,6 @@ def create_dataset_from_raw(directory_path):
 
     return dataset
 
-#X_train, X_test, y_train, y_test = sk.train_test_split(features,labels,test_size=0.33, random_state = 42)
-
 def create_shifted_frames(data):
     x = data[:, 0 : 18, :, :]
     y = data[:, 18 : 36, :, :]
