@@ -28,22 +28,19 @@ except:
 # larger possible dpi: 382x350
 def create_dataset_from_raw(directory_path):
     batch_names = [directory_path + name for name in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, name))]
-    dataset = np.zeros(shape=(len(batch_names),36,77,70)) # (samples, filters, rows = height, cols = width)
+    dataset = np.zeros(shape=(len(batch_names),36,222,202)) # (samples, filters, rows = height, cols = width)
 
     for batch_idx,batch in enumerate(batch_names):
         files = [x for x in os.listdir(batch) if x != '.DS_Store']
         files.sort()
-        crn_batch = np.zeros(shape=(36, 77, 70)) 
+        crn_batch = np.zeros(shape=(36, 222, 202)) 
         for (idx,raster) in enumerate(files):
             fn = batch + '/' + raster
             img = h5py.File(fn)
             original_image = np.array(img["image1"]["image_data"]).astype(float)
             img = Image.fromarray(original_image)
-            img = img.resize(size=(70, 77)) # note that here it is (width, heigh) while in the tensor is in (rows = height, cols = width)
+            img = img.resize(size=(202, 222)) # note that here it is (width, heigh) while in the tensor is in (rows = height, cols = width)
             original_image = np.array(img)
-            # set background pixels to 0.0
-            original_image[original_image == 255.0] = 255.0
-            original_image[original_image == 0.0] = 255.0
             original_image = original_image / 255.0
             crn_batch[idx] = original_image
         dataset[batch_idx] = crn_batch
@@ -86,35 +83,35 @@ epochs = 25
 batch_size = 1
 
 #Fit the model to the training data.
-model.fit(
-    X_train,
-    y_train,
-    batch_size=batch_size,
-    epochs=epochs,
-    validation_data=(X_val, y_val),
-    verbose=1,
-)
-model.save('./model_saved')
+# model.fit(
+#     X_train,
+#     y_train,
+#     batch_size=batch_size,
+#     epochs=epochs,
+#     validation_data=(X_val, y_val),
+#     verbose=1,
+# )
+# model.save('./model_saved')
 
 # Select a random example from the validation dataset.
-example = train_dataset[np.random.choice(range(len(validation_dataset)), size=1)[0]]
+example = dataset[np.random.choice(range(len(dataset)), size=1)[0]]
 
 # Pick the first/last 18 frames from the example.
-frames = example[:10, ...]
-original_frames = example[10:, ...]
-# reconstructed_model = keras.models.load_model("model_saved")
+frames = example[:18, ...]
+original_frames = example[18:, ...]
+reconstructed_model = keras.models.load_model("model_saved")
 
 # Predict a new set of 10 frames.
-for _ in range(10):
+for _ in range(18):
     # Extract the model's prediction and post-process it.
-    new_prediction = model.predict(np.expand_dims(frames, axis=0))
+    new_prediction = reconstructed_model.predict(np.expand_dims(frames, axis=0))
     new_prediction = np.squeeze(new_prediction, axis=0)
     predicted_frame = np.expand_dims(new_prediction[-1, ...], axis=0)
     # Extend the set of prediction frames.
     frames = np.concatenate((frames, predicted_frame), axis=0)
 
 # Construct a figure for the original and new frames.
-fig, axes = plt.subplots(2, 10, figsize=(20, 8))
+fig, axes = plt.subplots(2, 18, figsize=(20, 8))
 my_cmap = plt.cm.get_cmap('viridis')
 originals = []
 predicted = []
@@ -125,7 +122,7 @@ for idx, ax in enumerate(axes[0]):
     ax.axis("off")
 
 # Plot the new frames.
-new_frames = frames[10:, ...]
+new_frames = frames[18:, ...]
 for idx, ax in enumerate(axes[1]):
     ax.imshow(np.squeeze(new_frames[idx]), cmap=my_cmap)
     ax.set_title(f"Pred. Frame {idx}")
