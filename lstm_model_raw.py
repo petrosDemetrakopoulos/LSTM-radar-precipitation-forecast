@@ -50,7 +50,8 @@ def create_dataset_from_raw(directory_path, resize_to):
             img = h5py.File(fn)
             original_image = np.array(img["image1"]["image_data"]).astype(float)
             img = Image.fromarray(original_image)
-            img = img.resize(size=(resize_width, resize_height)) # note that here it is (width, heigh) while in the tensor is in (rows = height, cols = width)
+            # note that here it is (width, heigh) while in the tensor is in (rows = height, cols = width)
+            img = img.resize(size=(resize_width, resize_height)) 
             original_image = np.array(img)
             original_image = original_image / 255.0
             crn_batch[idx] = original_image
@@ -58,14 +59,14 @@ def create_dataset_from_raw(directory_path, resize_to):
         print("Importing batch:" + str(batch_idx+1))
     return dataset
 
-def create_shifted_frames(data):
+def split_data_xy(data):
     x = data[:, 0 : 18, :, :]
     y = data[:, 18 : 36, :, :]
     return x, y
 
 dataset = create_dataset_from_raw('./data/raw/', resize_to=(315,344))
 dataset = np.expand_dims(dataset, axis=-1)
-dataset_x, dataset_y = create_shifted_frames(dataset)
+dataset_x, dataset_y = split_data_xy(dataset)
 X_train, X_val, y_train, y_val = sk.train_test_split(dataset_x,dataset_y,test_size=0.2, random_state = 42)
 
 def create_model():
