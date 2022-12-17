@@ -55,7 +55,7 @@ def create_dataset_from_raw(directory_path, resize_to):
             original_image = original_image / 255.0
             crn_batch[idx] = original_image
         dataset[batch_idx] = crn_batch
-        print(batch_idx)
+        print("Importing batch:" + str(batch_idx+1))
     return dataset
 
 def create_shifted_frames(data):
@@ -90,11 +90,10 @@ def create_model():
 model = create_model()
 
 model.compile(loss='binary_crossentropy', optimizer='adadelta')
-font = ImageFont.load_default()
-visualkeras.layered_view(model, legend=True,font=font).show()
+keras.utils.plot_model(model, to_file="model.png", show_dtype=True, show_layer_activations=True, show_shapes=True)
 print(model.summary())
 # Define modifiable training hyperparameters.
-epochs = 50
+epochs = 25
 batch_size = 1
 
 #Fit the model to the training data.
