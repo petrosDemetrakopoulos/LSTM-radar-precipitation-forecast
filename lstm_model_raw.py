@@ -9,7 +9,6 @@ from tensorflow import keras
 from keras.models import Sequential
 from keras.layers.convolutional import Conv3D
 from keras.layers import ConvLSTM2D
-from keras.layers.convolutional import Conv2D
 from keras.layers import BatchNormalization
 from keras.layers import LeakyReLU
 from PIL import Image
@@ -19,10 +18,7 @@ matplotlib.use("Agg")
 import io
 import imageio
 from PIL import Image
-from PIL import Image, ImageDraw
 import sklearn.model_selection as sk
-import visualkeras
-from PIL import ImageFont
 
 try:
     # Disable all GPUS
@@ -91,13 +87,12 @@ def create_model():
 model = create_model()
 
 model.compile(loss='binary_crossentropy', optimizer='adadelta')
-keras.utils.plot_model(model, to_file="model.png", show_dtype=True, show_layer_activations=True, show_shapes=True)
 print(model.summary())
-# Define modifiable training hyperparameters.
+
 epochs = 25
 batch_size = 1
 
-#Fit the model to the training data.
+#Fit the model
 model.fit(
     X_train,
     y_train,
@@ -147,7 +142,7 @@ def save_animation_original():
     animation_originals = animation.ArtistAnimation(fig, original_images, 
                                                     interval=100, blit=False, 
                                                     repeat_delay=1000)
-    animation_originals.save('.ground_truth.gif', 
+    animation_originals.save('./ground_truth.gif', 
                             writer=animation.PillowWriter(), dpi=100)
 
 def save_animation_predicted():
