@@ -25,8 +25,8 @@ def raw_to_images():
         cmap=np.array(img["visualisation1"]["color_palette"])
         knmimap=ListedColormap(cmap/256.0)
 
-        original_image[original_image == 255.0] = np.nan
-        original_image[original_image == 0.0] = np.nan
+        # original_image[original_image == 255.0] = np.nan
+        # original_image[original_image == 0.0] = np.nan
         masked_image = np.ma.array(original_image, mask=np.isnan(original_image))
 
         my_cmap = plt.cm.get_cmap('viridis')

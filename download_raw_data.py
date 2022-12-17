@@ -17,6 +17,8 @@ import json
 import shutil
 import os
 import pygmt
+
+
 # KNMI operational test key from https://developer.dataplatform.knmi.nl/get-started#make-api-calls
 key = os.getenv('KNMI_API_KEY')
 def getRadarData(key, tstamp,dirloc):
@@ -73,8 +75,8 @@ def morning_filenames_for_day(year, month, day):
 
 #files = get_data_of_n_preevious_hours(3)
 year = '2020'
-month = '08'
-day = '20'
+month = '03'
+day = '10'
 tstamps_list = morning_filenames_for_day(year,month,day)
 dirloc = './data/raw/' + year +'-'+month + '-' + day + '-0805/'
 files = get_files_for_specific_timestamps(tstamps_list, dirloc)
