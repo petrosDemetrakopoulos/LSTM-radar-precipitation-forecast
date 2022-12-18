@@ -110,6 +110,7 @@ test_serie_Y = y_val[random_index[0]]
 
 first_frames = test_serie_X
 original_frames = test_serie_Y
+
 # predict the next 18 fames
 new_prediction = model.predict(np.expand_dims(first_frames, axis=0))
 new_prediction = np.squeeze(new_prediction, axis=0)
@@ -128,7 +129,6 @@ for idx, ax in enumerate(axes[1]):
     ax.set_title(f"Frame {idx + 18}")
     ax.axis("off")
 
-# Display the figure.
 plt.show()
 
 def save_animation_original():
@@ -154,7 +154,7 @@ def save_animation_predicted():
         crn_f = ax.imshow(np.squeeze(f),cmap='viridis', animated=False)
         ax.set_title(f"Predicted frames")
         predicted_images.append([crn_f])
-    print(len(predicted_images))
+
     animation_predicted = animation.ArtistAnimation(fig, predicted_images, 
                                                     interval=100, blit=False, 
                                                     repeat_delay=1000)
