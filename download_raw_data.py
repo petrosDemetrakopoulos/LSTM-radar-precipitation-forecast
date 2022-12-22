@@ -75,7 +75,7 @@ def morning_filenames_for_day(year, month, day):
 
 #files = get_data_of_n_preevious_hours(3)
 year = '2022'
-month = '02'
+month = '04'
 day = '05'
 tstamps_list = morning_filenames_for_day(year,month,day)
 dirloc = './data/raw/' + year +'-'+month + '-' + day + '-0805/'
