@@ -73,10 +73,19 @@ def morning_filenames_for_day(year, month, day):
                 prefix+'1005',prefix+'1010',prefix+'1015',prefix+'1020',prefix+'1025',prefix+'1030',
                 prefix+'1035',prefix+'1040',prefix+'1045',prefix+'1050',prefix+'1055',prefix+'1100']
 
+def afternoon_filenames_for_day(year, month, day):
+    prefix = year+month+day
+    return     [prefix+'2005',prefix+'2010',prefix+'2015',prefix+'2020',prefix+'2025',prefix+'2030',
+                prefix+'2035',prefix+'2040',prefix+'2045',prefix+'2050',prefix+'2055',prefix+'2100',
+                prefix+'2105',prefix+'2110',prefix+'2115',prefix+'2120',prefix+'2125',prefix+'2130',
+                prefix+'2135',prefix+'2140',prefix+'2145',prefix+'2150',prefix+'2155',prefix+'2200',
+                prefix+'2205',prefix+'2210',prefix+'2215',prefix+'2220',prefix+'2225',prefix+'2230',
+                prefix+'2235',prefix+'2240',prefix+'2245',prefix+'2250',prefix+'2255',prefix+'2300']
+
 #files = get_data_of_n_preevious_hours(3)
-year = '2022'
-month = '12'
-day = '30'
-tstamps_list = morning_filenames_for_day(year,month,day)
-dirloc = './data/raw/' + year +'-'+month + '-' + day + '-0805/'
+year = '2020'
+month = '01'
+day = '01'
+tstamps_list = afternoon_filenames_for_day(year,month,day)
+dirloc = './data/raw/' + year +'-'+month + '-' + day + '-2005/'
 files = get_files_for_specific_timestamps(tstamps_list, dirloc)
