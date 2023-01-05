@@ -1,16 +1,8 @@
 
-from pandas.plotting import register_matplotlib_converters
-import matplotlib
-import matplotlib.pyplot as plt
 import datetime
 import numpy as np
-from matplotlib.animation import FuncAnimation
 from datetime import timedelta
 import h5py
-from matplotlib.pyplot import imshow
-import matplotlib.animation as animation
-from matplotlib import cm
-from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 import urllib.parse
 import urllib.request
 import json
@@ -84,8 +76,8 @@ def afternoon_filenames_for_day(year, month, day):
 
 #files = get_data_of_n_preevious_hours(3)
 year = '2020'
-month = '04'
-day = '25'
+month = '05'
+day = '01'
 tstamps_list = afternoon_filenames_for_day(year,month,day)
 dirloc = './data/raw/' + year +'-'+month + '-' + day + '-2005/'
 files = get_files_for_specific_timestamps(tstamps_list, dirloc)
