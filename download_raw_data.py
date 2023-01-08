@@ -76,8 +76,8 @@ def afternoon_filenames_for_day(year, month, day):
 
 #files = get_data_of_n_preevious_hours(3)
 year = '2020'
-month = '05'
-day = '30'
+month = '06'
+day = '05'
 tstamps_list = afternoon_filenames_for_day(year,month,day)
 dirloc = './data/raw/' + year +'-'+month + '-' + day + '-2005/'
 files = get_files_for_specific_timestamps(tstamps_list, dirloc)
