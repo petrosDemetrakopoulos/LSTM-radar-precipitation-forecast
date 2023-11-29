@@ -1,24 +1,23 @@
+import os
+import glob
+import io
+import imageio
+import sklearn.model_selection as sk
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 import numpy as np
-import os
 import PIL
 import h5py
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import Sequential
-from keras.layers.convolutional import Conv3D
+from keras.layers import Conv3D
 from keras.layers import ConvLSTM2D
 from keras.layers import BatchNormalization
 from keras.layers import LeakyReLU
 from PIL import Image
-import glob
-import matplotlib.animation as animation
 matplotlib.use("Agg")
-import io
-import imageio
-from PIL import Image
-import sklearn.model_selection as sk
 
 try:
     # Disable all GPUS
@@ -40,14 +39,14 @@ def create_dataset_from_raw(directory_path, resize_to):
     for batch_idx,batch in enumerate(batch_names):
         files = [x for x in os.listdir(batch) if x != '.DS_Store']
         files.sort()
-        crn_batch = np.zeros(shape=(36, resize_height, resize_width)) 
+        crn_batch = np.zeros(shape=(36, resize_height, resize_width))
         for (idx,raster) in enumerate(files):
             fn = batch + '/' + raster
             img = h5py.File(fn)
             original_image = np.array(img["image1"]["image_data"]).astype(float)
             img = Image.fromarray(original_image)
             # note that here it is (width, heigh) while in the tensor is in (rows = height, cols = width)
-            img = img.resize(size=(resize_width, resize_height)) 
+            img = img.resize(size=(resize_width, resize_height))
             original_image = np.array(img)
             original_image = original_image / 255.0
             crn_batch[idx] = original_image
@@ -89,15 +88,15 @@ model = create_model()
 model.compile(loss='binary_crossentropy', optimizer='adadelta')
 print(model.summary())
 
-epochs = 25
-batch_size = 1
+EPOCHS = 25
+BATCH_SIZE = 1
 
 #Fit the model
 model.fit(
     X_train,
     y_train,
-    batch_size=batch_size,
-    epochs=epochs,
+    batch_size=BATCH_SIZE,
+    epochs=EPOCHS,
     validation_data=(X_val, y_val),
     verbose=1,
 )
@@ -139,28 +138,27 @@ def save_animation_original():
         ax.axis("off")
         crn_f = ax.imshow(np.squeeze(f),cmap='viridis', animated=False)
         original_images.append([crn_f])
-    animation_originals = animation.ArtistAnimation(fig, original_images, 
-                                                    interval=100, blit=False, 
+    animation_originals = animation.ArtistAnimation(fig, original_images,
+                                                    interval=100, blit=False,
                                                     repeat_delay=1000)
-    animation_originals.save('./ground_truth.gif', 
+    animation_originals.save('./ground_truth.gif',
                             writer=animation.PillowWriter(), dpi=100)
 
 def save_animation_predicted():
     fig, ax = plt.subplots()
     predicted_images = []
     for f in new_prediction:
-        ax.set_title(f"Ground Truth")
+        ax.set_title("Ground Truth")
         ax.axis("off")
         crn_f = ax.imshow(np.squeeze(f),cmap='viridis', animated=False)
-        ax.set_title(f"Predicted frames")
+        ax.set_title("Predicted frames")
         predicted_images.append([crn_f])
 
-    animation_predicted = animation.ArtistAnimation(fig, predicted_images, 
-                                                    interval=100, blit=False, 
+    animation_predicted = animation.ArtistAnimation(fig, predicted_images,
+                                                    interval=100, blit=False,
                                                     repeat_delay=1000)
-    animation_predicted.save('./predicted.gif', 
+    animation_predicted.save('./predicted.gif',
                             writer=animation.PillowWriter(), dpi=100)
-    HTML(animation_predicted.to_html5_video())
 
 save_animation_predicted()
 save_animation_original()
