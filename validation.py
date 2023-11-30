@@ -1,11 +1,11 @@
 import os
+import math
 import tensorflow as tf
-from tensorflow import keras
 from keras.models import load_model
 from PIL import Image
 import numpy as np
 import h5py
-import math
+
 
 try:
     # Disable all GPUS
