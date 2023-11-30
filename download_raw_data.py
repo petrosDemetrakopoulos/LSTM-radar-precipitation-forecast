@@ -72,8 +72,8 @@ def afternoon_filenames_for_day(year, month, day):
                 prefix+'2235',prefix+'2240',prefix+'2245',prefix+'2250',prefix+'2255',prefix+'2300']
 
 #files = get_data_of_n_preevious_hours(3)
-year = '2022'
-month = '03'
+year = '2023'
+month = '01'
 day = '20'
 tstamps_list = afternoon_filenames_for_day(year,month,day)
 dirloc = './data/raw_validation/' + year +'-'+month + '-' + day + '-2005/'
