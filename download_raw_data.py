@@ -1,13 +1,10 @@
-
 import datetime
-import numpy as np
+import os
 from datetime import timedelta
-import h5py
 import urllib.parse
 import urllib.request
 import json
 import shutil
-import os
 import pygmt
 
 
@@ -19,17 +16,17 @@ def getRadarData(key, tstamp,dirloc):
 
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req) as response:
-       meta = response.read()
-    
+        meta = response.read()
+
     realurl=json.loads(meta)["temporaryDownloadUrl"]
     req = urllib.request.Request(realurl)
     fname=tstamp+".hf5"
     print(fname)
-    isExist = os.path.exists(dirloc)
-    if not isExist:
+    exists = os.path.exists(dirloc)
+    if not exists:
         # Create a new directory because it does not exist
         os.makedirs(dirloc)
-   
+
     with urllib.request.urlopen(req) as response:
         with open(dirloc+fname, 'wb') as location:
             shutil.copyfileobj(response, location)
@@ -50,7 +47,7 @@ def get_data_of_n_previous_hours(hours):
     files = []
     start=now
     for n in range(0,hours*12): # data avaialble every 5 minutes, so 12 times per hour
-        tstamp=start.strftime("%Y%m%d%H%M")
+        tstamp = start.strftime("%Y%m%d%H%M")
         files.append(tstamp+".hf5")
         getRadarData(key, tstamp)
         start += datetime.timedelta(minutes=5)
@@ -76,7 +73,7 @@ def afternoon_filenames_for_day(year, month, day):
 
 #files = get_data_of_n_preevious_hours(3)
 year = '2022'
-month = '05'
+month = '03'
 day = '20'
 tstamps_list = afternoon_filenames_for_day(year,month,day)
 dirloc = './data/raw_validation/' + year +'-'+month + '-' + day + '-2005/'
