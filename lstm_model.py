@@ -62,7 +62,7 @@ def split_data_xy(data):
 dataset = create_dataset_from_raw('./data/raw_training/', resize_to=(315,344))
 dataset = np.expand_dims(dataset, axis=-1)
 dataset_x, dataset_y = split_data_xy(dataset)
-X_train, X_val, y_train, y_val = sk.train_test_split(dataset_x,dataset_y,test_size=0.2, random_state = 42)
+X_train, X_val, y_train, y_val = sk.train_test_split(dataset_x,dataset_y,test_size=0.1, random_state = 42)
 
 def create_model():
     model = Sequential()
