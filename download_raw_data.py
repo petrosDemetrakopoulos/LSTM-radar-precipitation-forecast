@@ -5,12 +5,11 @@ import urllib.parse
 import urllib.request
 import json
 import shutil
-import pygmt
 
 
 # KNMI operational test key from https://developer.dataplatform.knmi.nl/get-started#make-api-calls
 key = os.getenv('KNMI_API_KEY')
-def getRadarData(key, tstamp,dirloc):
+def get_radar_data(key, tstamp,dirloc):
     url = 'https://api.dataplatform.knmi.nl/open-data/v1/datasets/radar_reflectivity_composites/versions/2.0/files/RAD_NL25_PCP_NA_'+tstamp+'.h5/url'
     headers = {'Authorization': key}
 
@@ -18,7 +17,7 @@ def getRadarData(key, tstamp,dirloc):
     with urllib.request.urlopen(req) as response:
         meta = response.read()
 
-    realurl=json.loads(meta)["temporaryDownloadUrl"]
+    realurl = json.loads(meta)["temporaryDownloadUrl"]
     req = urllib.request.Request(realurl)
     fname=tstamp+".hf5"
     print(fname)
@@ -35,21 +34,21 @@ def get_files_for_specific_timestamps(tstamps_list, dirloc):
     files = []
     for tstamp in tstamps_list:
         files.append(dirloc+tstamp+".hf5")
-        getRadarData(key, tstamp, dirloc)
+        get_radar_data(key, tstamp, dirloc)
     return files
 
 def get_data_of_n_previous_hours(hours):
-    now=datetime.datetime.utcnow()
+    now = datetime.datetime.utcnow()
     now = now - datetime.timedelta(hours=hours, minutes=5)
     now -= datetime.timedelta(minutes=now.minute%5)
 
     now.strftime("%Y%m%d%H%M")
     files = []
     start=now
-    for n in range(0,hours*12): # data avaialble every 5 minutes, so 12 times per hour
+    for _ in range(0,hours*12): # data avaialble every 5 minutes, so 12 times per hour
         tstamp = start.strftime("%Y%m%d%H%M")
         files.append(tstamp+".hf5")
-        getRadarData(key, tstamp)
+        get_radar_data(key, tstamp, './data/raw_training/'+start.strftime("%Y-%m-%d-%H%M"))
         start += datetime.timedelta(minutes=5)
     return files
 
@@ -71,9 +70,9 @@ def afternoon_filenames_for_day(year, month, day):
                 prefix+'2205',prefix+'2210',prefix+'2215',prefix+'2220',prefix+'2225',prefix+'2230',
                 prefix+'2235',prefix+'2240',prefix+'2245',prefix+'2250',prefix+'2255',prefix+'2300']
 
-#files = get_data_of_n_preevious_hours(3)
+# files = get_data_of_n_preevious_hours(3)
 YEAR = '2023'
-MONTH = '04'
+MONTH = '06'
 DAY = '20'
 tstamps_list = afternoon_filenames_for_day(YEAR, MONTH, DAY)
 DIR_LOC = './data/raw_validation/' + YEAR +'-'+MONTH + '-' + DAY + '-2005/'

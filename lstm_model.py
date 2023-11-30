@@ -134,7 +134,7 @@ def save_animation_original():
     fig, ax = plt.subplots()
     original_images = []
     for f in original_frames:
-        ax.set_title(f"Ground Truth")
+        ax.set_title("Ground Truth")
         ax.axis("off")
         crn_f = ax.imshow(np.squeeze(f),cmap='viridis', animated=False)
         original_images.append([crn_f])
