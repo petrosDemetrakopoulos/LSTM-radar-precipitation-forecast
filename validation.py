@@ -5,6 +5,9 @@ from keras.models import load_model
 from PIL import Image
 import numpy as np
 import h5py
+import matplotlib
+import matplotlib.pyplot as plt
+import cv2
 
 
 try:
@@ -53,6 +56,24 @@ def split_data_xy(data):
 def RMSE(y_true,y_pred):
     return math.sqrt(np.square(np.subtract(y_true,y_pred)).mean())
 
+def plot_both(y_true, y_pred):
+    # Plot the original frames.
+    fig, axes = plt.subplots(2, 4, figsize=(20, 10))
+
+    for idx, ax in enumerate(axes[0]):
+        ax.imshow(np.squeeze(y_true[idx]), cmap="viridis")
+        ax.set_title(f"Frame {idx + 18}")
+        ax.axis("off")
+
+    # Plot the predicted frames.
+    for idx, ax in enumerate(axes[1]):
+        predicted = y_pred[idx].reshape((344,315))
+        ax.imshow(predicted, cmap="viridis")
+        ax.set_title(f"Frame {idx + 18}")
+        ax.axis("off")
+
+    plt.show()
+
 val_dataset = create_dataset_from_raw('./data/raw_validation/', resize_to=(315,344))
 val_dataset = np.expand_dims(val_dataset, axis=-1)
 val_x, val_y = split_data_xy(val_dataset)
@@ -63,7 +84,7 @@ for i in range(val_x.shape[0]):
     crn_datapoint = val_x[i]
     new_prediction = model.predict(np.expand_dims(crn_datapoint, axis=0))
     new_prediction = np.squeeze(new_prediction, axis=0)
-
+    plot_both(val_y[i], new_prediction)
     rmse = RMSE(val_y[i], new_prediction)
     results.append(rmse)
 

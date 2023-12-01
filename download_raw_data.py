@@ -71,7 +71,7 @@ def afternoon_filenames_for_day(year, month, day):
 
 # files = get_data_of_n_preevious_hours(3)
 YEAR = '2023'
-MONTH = '03'
+MONTH = '05'
 DAY = '10'
 tstamps_list = afternoon_filenames_for_day(YEAR, MONTH, DAY)
 DIR_LOC = './data/raw_validation/' + YEAR +'-'+MONTH + '-' + DAY + '-2005/'
