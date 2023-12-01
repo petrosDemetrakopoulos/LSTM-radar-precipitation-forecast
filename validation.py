@@ -17,8 +17,8 @@ except:
     # Invalid device or cannot modify virtual devices once initialized.
     pass
 
-model_path = './model_saved'
-model = load_model(model_path)
+MODEL_PATH = './model_saved'
+model = load_model(MODEL_PATH)
 
 # larger possible dpi: 382x350
 def create_dataset_from_raw(directory_path, resize_to):
@@ -53,13 +53,9 @@ def split_data_xy(data):
 def RMSE(y_true,y_pred):
     return math.sqrt(np.square(np.subtract(y_true,y_pred)).mean())
 
-
 val_dataset = create_dataset_from_raw('./data/raw_validation/', resize_to=(315,344))
 val_dataset = np.expand_dims(val_dataset, axis=-1)
 val_x, val_y = split_data_xy(val_dataset)
-
-print(val_x.shape)
-print(val_y.shape)
 
 # calculate RMSE between ground truth and predicted frames
 results = []
@@ -67,8 +63,8 @@ for i in range(val_x.shape[0]):
     crn_datapoint = val_x[i]
     new_prediction = model.predict(np.expand_dims(crn_datapoint, axis=0))
     new_prediction = np.squeeze(new_prediction, axis=0)
-    print(new_prediction.shape)
+
     rmse = RMSE(val_y[i], new_prediction)
     results.append(rmse)
-    print(rmse)
+
 print("Average RMSE: " + str(np.average(results)))

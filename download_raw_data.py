@@ -1,6 +1,5 @@
 import datetime
 import os
-from datetime import timedelta
 import urllib.parse
 import urllib.request
 import json
@@ -9,9 +8,9 @@ import shutil
 
 # KNMI operational test key from https://developer.dataplatform.knmi.nl/get-started#make-api-calls
 key = os.getenv('KNMI_API_KEY')
-def get_radar_data(key, tstamp,dirloc):
+def get_radar_data(api_key, tstamp,dirloc):
     url = 'https://api.dataplatform.knmi.nl/open-data/v1/datasets/radar_reflectivity_composites/versions/2.0/files/RAD_NL25_PCP_NA_'+tstamp+'.h5/url'
-    headers = {'Authorization': key}
+    headers = {'Authorization': api_key}
 
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req) as response:
@@ -72,8 +71,8 @@ def afternoon_filenames_for_day(year, month, day):
 
 # files = get_data_of_n_preevious_hours(3)
 YEAR = '2023'
-MONTH = '10'
-DAY = '20'
+MONTH = '01'
+DAY = '10'
 tstamps_list = afternoon_filenames_for_day(YEAR, MONTH, DAY)
 DIR_LOC = './data/raw_validation/' + YEAR +'-'+MONTH + '-' + DAY + '-2005/'
 files = get_files_for_specific_timestamps(tstamps_list, DIR_LOC)
