@@ -84,7 +84,7 @@ for i in range(val_x.shape[0]):
     crn_datapoint = val_x[i]
     new_prediction = model.predict(np.expand_dims(crn_datapoint, axis=0))
     new_prediction = np.squeeze(new_prediction, axis=0)
-    plot_both(val_y[i], new_prediction)
+
     rmse = RMSE(val_y[i], new_prediction)
     results.append(rmse)
 
