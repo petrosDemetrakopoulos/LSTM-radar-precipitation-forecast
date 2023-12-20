@@ -8,3 +8,15 @@ The model was developed using Tensorflow and Keras
 ![Ground Truth](./ground_truth.gif)
 
 ![Predicted frames](./predicted.gif)
+
+## Cite
+```
+@misc{demetrakopoulos2023shortterm,
+      title={Short-term Precipitation Forecasting in The Netherlands: An Application of Convolutional LSTM neural networks to weather radar data}, 
+      author={Petros Demetrakopoulos},
+      year={2023},
+      eprint={2312.01197},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
