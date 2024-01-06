@@ -5,6 +5,3 @@ data/raw/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
 ./data/raw_training/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
 /data/raw_training/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
 data/raw_training/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
-./data/raw_validation/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
-/data/raw_validation/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
-data/raw_validation/**/*.hf5 filter=lfs diff=lfs merge=lfs -text
