@@ -1,2 +1,3 @@
 KNMI_API_KEY.txt
 ./data/images/*
+/data/raw_validation/*
